@@ -31,17 +31,21 @@ export const BottomMenu = () => {
         }
 
 
-        if (height > (-screenHeight + 200)) { // lower
-          pan.setOffset({
-            x: pan.x._value,
-            y: pan.y._value
-          });
-        } else {
-          pan.setOffset({
-            x: pan.x._value,
-            y: -screenHeight + 200
-          });
-        }
+        pan.setOffset({
+          x: pan.x._value,
+          y: pan.y._value
+        });
+        // if (height > (-screenHeight + 200)) { // lower
+        //   pan.setOffset({
+        //     x: pan.x._value,
+        //     y: pan.y._value
+        //   });
+        // } else {
+        //   pan.setOffset({
+        //     x: pan.x._value,
+        //     y: -screenHeight + 200
+        //   });
+        // }
       },
       onPanResponderMove: (evt, gestureState) => {
         // console.log('moveY: ', gestureState.moveY);
@@ -56,10 +60,10 @@ export const BottomMenu = () => {
         } else {
           height = offset
         }
-        console.log(
-          'offset: ', offset,
-          'value: ', value,
-        );
+        // console.log(
+        //   'offset: ', offset,
+        //   'value: ', value,
+        // );
 
         // dy with minus sign - direction up else direction
         // console.log(
@@ -74,7 +78,7 @@ export const BottomMenu = () => {
         // console.log(pan.y);
 
         // // console.log(offset + value);
-        console.log('height: ', height);
+        // console.log('height: ', height);
 
         // console.log(
         //   'value: ', pan.getLayout().top._value,
@@ -92,25 +96,34 @@ export const BottomMenu = () => {
         //   { useNativeDriver: false }
         // )
 
-        console.log('-screenHeight + 200): ', -screenHeight + 200);
-        
+        // console.log('-screenHeight + 200): ', -screenHeight + 200);
 
 
-        if (height > 0 && gestureState.dy > 0) { // lower
-          console.log(1);
-          // pan.y.setValue(0)
-          // pan.y.setOffset(0)
-          // return false
-
-        } else if (height < (-screenHeight + 200) && gestureState.dy < 0) {
-          console.log(2);
-          // pan.y.setValue(gestureState.dy)
-          // return false
-          // pan.y.setValue(800)
-        } else {
-          console.log(3);
+        if (gestureState.dy + pan.getLayout().top._offset > (-screenHeight + 200) || ((gestureState.dy === height) && gestureState.dy > 0)) {
+          console.log(
+            'height: ', height,
+            'gestureState.dy: ', gestureState.dy,
+          );
           pan.y.setValue(gestureState.dy)
+
         }
+
+
+        // if (height > 0 && gestureState.dy > 0) { // lower
+        //   console.log(1);
+        //   // pan.y.setValue(0)
+        //   // pan.y.setOffset(0)
+        //   // return false
+
+        // } else if (height < (-screenHeight + 200) && gestureState.dy < 0) {
+        //   console.log(2);
+        //   // pan.y.setValue(gestureState.dy)
+        //   // return false
+        //   // pan.y.setValue(800)
+        // } else {
+        //   console.log(3);
+        //   pan.y.setValue(gestureState.dy)
+        // }
 
 
       },
@@ -131,26 +144,37 @@ export const BottomMenu = () => {
           height = offset
         }
 
-        if (height > 0 && gestureState.dy > 0) { // lower
-          Animated.timing(pan, {
-            toValue: 0,
-            useNativeDriver: false,
-            duration: 100
-          }).start();
-          console.log('1 end');
-        } else if (height > (-screenHeight + 200) / 2) {
-          Animated.timing(pan, {
-            toValue: 0,
-            useNativeDriver: false,
-            duration: 100
-          }).start();
-          console.log('2 end');
-        }  else {
-          Animated.timing(pan, {
-            toValue: (-screenHeight + 200),
-            useNativeDriver: false,
-            duration: 300
-          }).start();
+        console.log(
+          'height: ', height,
+          'gestureState.dy: ', gestureState.dy,
+        );
+
+
+        if (height > (-screenHeight + 200)) {
+          if (height > 0 && gestureState.dy > 0) { // lower
+            Animated.timing(pan, {
+              toValue: 0,
+              useNativeDriver: false,
+              duration: 100
+            }).start();
+            console.log('1 end');
+          } else if (height > (-screenHeight + 200) / 2) {
+            Animated.timing(pan, {
+              toValue: 0,
+              useNativeDriver: false,
+              duration: 100
+            }).start();
+            console.log('2 end');
+          } else {
+            Animated.timing(pan, {
+              toValue: (-screenHeight + 200),
+              useNativeDriver: false,
+              duration: 300
+            }).start();
+          }
+        } else {
+          pan.y.setOffset(0)
+          pan.y.setValue(-screenHeight + 200)
         }
 
       }
@@ -159,22 +183,18 @@ export const BottomMenu = () => {
 
   const panResponderSrolled = useRef(
     PanResponder.create({
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderGrant: (evt, gestureState) => {
-        console.log(evt);
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
         evt.stopPropagation(true)
-        evt.isDefaultPrevented()
-
-        console.log(evt.isPropagationStopped());
-
-
-
+        // evt.isDefaultPrevented()
       },
-      onPanResponderMove: (evt, gestureState) => {
-
-
-      },
+      onPanResponderTerminationRequest: () => false,
+      onStartShouldSetPanResponderCapture: () => false,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) =>
+        false,
+      onPanResponderGrant: (evt, gestureState) => false,
       onPanResponderRelease: (evt, gestureState) => {
+        // evt.stopPropagation(true)
+        // evt.isDefaultPrevented()
       }
     })
   ).current;
@@ -191,30 +211,30 @@ export const BottomMenu = () => {
       {/* <Animated.View style={styles.bottomMenu}
         {...panResponderSrolled.panHandlers}
       > */}
-        <ScrollView style={{ flex: 1, width: '100%' }} {...panResponderSrolled.panHandlers}>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-          <Text style={styles.defaultText}>MENU</Text>
-        </ScrollView>
+      <ScrollView style={{ width: '100%', backgroundColor: 'red', height: 100 }} {...panResponderSrolled.panHandlers}>
+        <Text style={styles.defaultText}>1</Text>
+        <Text style={styles.defaultText}>2</Text>
+        <Text style={styles.defaultText}>3</Text>
+        <Text style={styles.defaultText}>4</Text>
+        <Text style={styles.defaultText}>5</Text>
+        <Text style={styles.defaultText}>6</Text>
+        <Text style={styles.defaultText}>7</Text>
+        <Text style={styles.defaultText}>8</Text>
+        <Text style={styles.defaultText}>9</Text>
+        <Text style={styles.defaultText}>10</Text>
+        <Text style={styles.defaultText}>11</Text>
+        <Text style={styles.defaultText}>12</Text>
+        <Text style={styles.defaultText}>13</Text>
+        <Text style={styles.defaultText}>14</Text>
+        <Text style={styles.defaultText}>15</Text>
+        <Text style={styles.defaultText}>16</Text>
+        <Text style={styles.defaultText}>17</Text>
+        <Text style={styles.defaultText}>18</Text>
+        <Text style={styles.defaultText}>19</Text>
+        <Text style={styles.defaultText}>20</Text>
+        <Text style={styles.defaultText}>21</Text>
+        <Text style={styles.defaultText}>22</Text>
+      </ScrollView>
       {/* </Animated.View> */}
     </Animated.View>
   );
@@ -227,7 +247,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 50,
     padding: 20,
     height: Dimensions.get('window').height - 50,
-    bottom: -(Dimensions.get('window').height - 100),
+    bottom: -(Dimensions.get('window').height - 200),
     // top: 0,
     width: '100%',
     position: 'absolute',
@@ -404,7 +424,7 @@ const styles = StyleSheet.create({
 //         //   // pan.flattenOffset();
 //         // }
 
-        
+
 
 //         // if (height > 100) {
 //         //   Animated.timing(pan, {

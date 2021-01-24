@@ -27,7 +27,6 @@ const App = () => {
         <View style={styles.startWrapper}>
           <Text>START</Text>
         </View>
-
         <BottomMenu />
       </SafeAreaView>
     </>
