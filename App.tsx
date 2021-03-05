@@ -17,17 +17,19 @@ import {
   Text,
   StatusBar,
 } from 'react-native';
-import { BottomMenu } from './src/BottomMenu';
+import {BottomSheet} from './src/BottomMentu_2';
+import {BottomMenu} from './src/BottomMenu';
 
 const App = () => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{flex: 1}}>
         <View style={styles.startWrapper}>
           <Text>START</Text>
         </View>
-        <BottomMenu />
+        {/* <BottomMenu /> */}
+        <BottomSheet />
       </SafeAreaView>
     </>
   );
